@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE struts-config PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+	"http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+
+    <!-- =========================================== Global Forward Definitions -->
+    <global-forwards>
+        <forward name="home" path="/home.do" />
+    </global-forwards>
+
+    <!-- =========================================== Action Mapping Definitions -->
+    <action-mappings>
+        <action path="/home"
+                type="com.samaxes.webreport.action.HomeAction"
+                parameter="homeAction"
+                scope="request">
+
+                <forward name="success" path="/WEB-INF/jsps/home.jsp" />
+        </action>
+
+        <action path="/htmlReport"
+                type="com.samaxes.webreport.action.WebReportAction"
+                parameter="htmlReportAction"
+                scope="request">
+
+                <forward name="success" path="/WEB-INF/jsps/viewReport.jsp" />
+        </action>
+
+        <action path="/pdfReport"
+                type="com.samaxes.webreport.action.WebReportAction"
+                parameter="pdfReportAction"
+                scope="request">
+        </action>
+
+        <action path="/xlsReport"
+                type="com.samaxes.webreport.action.WebReportAction"
+                parameter="xlsReportAction"
+                scope="request">
+        </action>
+    </action-mappings>
+
+    <!-- ======================================== Message Resources Definitions -->
+    <message-resources parameter="MessageResources" null="false" />
+
+    <!-- ======================================== Plugin Definitions -->
+    <plug-in className="com.samaxes.webreport.plugin.BirtInitializationPlugin" />
+
+</struts-config>

@@ -1,0 +1,2 @@
+# Application server deployment directory. Please use forward slashes "/".
+deploy.dir=E:/Work/jboss/server/default/deploy

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="WebReport" default="dist" basedir=".">
+    <description>BIRT WebReport</description>
+
+    <!-- Enable access to build.properties variables -->
+    <property file="build.properties" />
+
+    <!-- Set to use JDK 1.5 -->
+    <property name="build.compiler" value="javac1.5" />
+
+    <!-- Set global properties for this build -->
+    <property name="project.name" value="webreport" />
+    <property name="project.title" value="BIRT WebReport" />
+    <property name="project.version" value="1.1.0" />
+    <property name="war.file" value="${project.name}.war" />
+    <property name="javadoc.packages" value="com.samaxes.*" />
+
+    <property name="lib.dir" value="lib" />
+    <property name="src.dir" value="src" />
+    <property name="resources.dir" value="resources" />
+    <property name="docs.dir" location="docs" />
+    <property name="web.dir" value="webapp" />
+    <property name="dist.dir" location="dist" />
+    <property name="build.dir" location="build" />
+    <property name="classes.dir" value="${build.dir}/classes" />
+
+    <property name="libs.excluded" value="javax.servlet.jar, antlr.jar, commons-logging.jar" />
+
+    <path id="project.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <target name="init">
+        <tstamp>
+            <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+        </tstamp>
+
+        <mkdir dir="${dist.dir}" />
+        <mkdir dir="${classes.dir}" />
+    </target>
+
+    <target name="clean" description="clean-up">
+        <delete dir="${dist.dir}" />
+        <delete dir="${build.dir}" />
+        <delete dir="${docs.dir}/api" />
+    </target>
+
+    <target name="javadocs" depends="init" description="generate the API documentation">
+        <javadoc packagenames="${javadoc.packages}" sourcepath="${src.dir}" defaultexcludes="yes"
+            destdir="${docs.dir}/api" use="true" windowtitle="${project.title} API">
+            <classpath>
+                <path refid="project.classpath" />
+            </classpath>
+            <doctitle>
+                <![CDATA[<h1>${project.title}</h1>]]>
+            </doctitle>
+        </javadoc>
+    </target>
+
+    <target name="compile" depends="init" description="compile the source">
+        <javac fork="true" debug="true" optimize="false" deprecation="true" source="1.5" target="1.5"
+            srcdir="${src.dir}" destdir="${classes.dir}">
+            <classpath>
+                <path refid="project.classpath" />
+            </classpath>
+        </javac>
+
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.dir}" />
+        </copy>
+    </target>
+
+    <target name="dist" depends="compile" description="generate the distribution file">
+        <war destfile="${dist.dir}/${war.file}" webxml="${web.dir}/WEB-INF/web.xml">
+            <fileset dir="${web.dir}" excludes="**/web.xml" />
+            <webinf dir="${web.dir}/WEB-INF">
+                <include name="*.xml" />
+                <exclude name="web.xml" />
+            </webinf>
+            <lib dir="${lib.dir}" excludes="${libs.excluded}" />
+            <classes dir="${classes.dir}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${project.version}" />
+                <attribute name="Built-Date" value="${TODAY}" />
+            </manifest>
+        </war>
+    </target>
+
+    <target name="deploy" depends="compile">
+        <mkdir dir="${dist.dir}/${project.name}" />
+
+        <copy todir="${dist.dir}/${project.name}">
+            <fileset dir="${web.dir}" />
+        </copy>
+        <copy todir="${dist.dir}/${project.name}/WEB-INF/lib">
+            <fileset dir="${lib.dir}" excludes="${libs.excluded}" />
+        </copy>
+        <copy todir="${dist.dir}/${project.name}/WEB-INF/classes">
+            <fileset dir="${classes.dir}" />
+        </copy>
+        <copy todir="${deploy.dir}/${war.file}">
+            <fileset dir="${dist.dir}/${project.name}" />
+        </copy>
+    </target>
+
+    <target name="deploy-and-touch" depends="deploy">
+        <touch file="${deploy.dir}/${war.file}/WEB-INF/web.xml" />
+    </target>
+
+    <target name="undeploy">
+        <delete dir="${deploy.dir}/${war.file}" />
+        <delete file="${deploy.dir}/${war.file}" />
+    </target>
+</project>

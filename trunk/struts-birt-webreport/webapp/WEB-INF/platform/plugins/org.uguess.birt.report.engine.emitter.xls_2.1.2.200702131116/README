@@ -1,0 +1,73 @@
+Xls emitter for BIRT (Tribix) 
+[Version 2.1.2]
+===============================
+
+Features
+-------------
+1. Basic XLS output support for BIRT.
+2. Support specific page ranges for ouput, e.g. "1-3", "odd", "1,3,5-7".
+3. Support output fixed-column-width sheet(aka. neat mode)(experimental).
+4. Support specify show/hide grid lines in output.
+5. Support specify remove/keep blank rows in output.
+6. Support export page body only(e.g. not include page header/footer)
+7. Support export all pages as one single sheet.
+
+Change Log
+-------------
+1. Added option to suppress unsupported image.
+2. Sync with BIRT 2.1.2 release.
+
+Compatibility
+-------------
+This version is compatible with BIRT 2.1.0[N20060628-1351] ,2.1.1[N20060926-0959] and 2.1.2[N20070208-1000] release build, NOT compatible with any earlier version. 
+Later BIRT version may work, but not guaranteed.
+
+(Note actaully this release also support the latest BIRT 2.2 stream milestone build, see instructions in Installation section below)
+
+Known Issues
+-------------
+1. Neat mode is experimental and may result wrong in some cases. Please switch back to normal mode if you encounter problems.
+2. Only JPEG, PNG, DIB formats are supported for image items and charts at present time.
+
+Installation
+-------------
+1. Install and run Birt correctly first.
+
+2. Extract the downloaded plugin file into the eclipse plugins directory.
+
+3*. Download Apahce POI library from apache site, put it in the /lib directory under the extracted plugin folder.
+
+4. Download and apply BIRT patch file so to make the xls plugin work correctly. If you are building BIRT from a CVS source tree, override the soure file; if you are just using the binary BIRT sdk, replace the class files in related plugin jar. Here is the list:
+
+(For 2.2 users, the patchs are no longer needed, just ignore this step.:)
+
+(For 2.1.1 and 2.1.2 users, previous viewer and designer patches are not necessary and removed, only engine patch is needed. But for 2.1.0 users, viewer and designer patches are still needed.)
+
+(Note for 2.1.x user, you should use the correct patchs matching your BIRT version. This package ONLY contains patchs for BIRT 2.1.2 release build, for other version patch files, please find in old release package.)
+
+org.eclipse.birt.report.engine org\eclipse\birt\report\engine\api\impl\RenderTask in plugins/org.eclipse.birt.report.engine_2.1.x.*.jar
+org.eclipse.birt.report.engine org\eclipse\birt\report\engine\layout\LayoutEngineFactory in plugins/org.eclipse.birt.report.engine_2.1.x.*.jar
+
+5. Ok, now create a report as usual and choose preview as XLS, enjoy:)
+
+POI Related
+-------------
+*  Only 3.0-alpha3 dev version are supported.
+*  Current tested and recommended version is poi-3.0-alpha3-20061212.jar.
+*  POI alpha1, alpha2 are not supported anymore since some essential api change by alpha3.
+
+Support
+-------------
+Please visit https://sourceforge.net/projects/tribix for more detail.
+
+Dependencies
+-------------
+To build the source or run, you need the Jakata POI library to be under your plugin lib directory.
+
+Jakarta POI - great library to manipulate Microsoft Format Files from pure Java
+
+    http://jakarta.apache.org/poi/ 
+
+Legal
+------------
+This software is distributed under the terms of the FSF Lesser GNU Public License (see LICENSE).
