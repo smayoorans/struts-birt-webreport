@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/chartengineapi.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/coreapi.jar"/>
+	<classpathentry kind="lib" path="lib/dataadapterapi.jar"/>
+	<classpathentry kind="lib" path="lib/dteapi.jar"/>
+	<classpathentry kind="lib" path="lib/engineapi.jar"/>
+	<classpathentry kind="lib" path="lib/flute.jar"/>
+	<classpathentry kind="lib" path="lib/js.jar"/>
+	<classpathentry kind="lib" path="lib/modelapi.jar"/>
+	<classpathentry kind="lib" path="lib/sac.jar"/>
+	<classpathentry kind="lib" path="lib/scriptapi.jar"/>
+	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/antlr.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester.jar"/>
+	<classpathentry kind="lib" path="lib/commons-fileupload.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/commons-validator.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-oro.jar"/>
+	<classpathentry kind="lib" path="lib/struts.jar"/>
+	<classpathentry kind="lib" path="lib/com.ibm.icu_3.4.5.20061213.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.2.1.v200702131851.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.2.2.v200702131851.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.2.2.v200702131851.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
