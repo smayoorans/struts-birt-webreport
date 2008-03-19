@@ -24,7 +24,7 @@
     <property name="build.dir" location="build" />
     <property name="classes.dir" value="${build.dir}/classes" />
 
-    <property name="libs.excluded" value="javax.servlet.jar, antlr.jar, commons-logging.jar" />
+    <property name="libs.excluded" value="javax.servlet.jar, antlr.jar" />
 
     <path id="project.classpath">
         <fileset dir="${lib.dir}">
