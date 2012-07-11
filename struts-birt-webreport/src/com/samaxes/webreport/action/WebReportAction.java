@@ -7,7 +7,6 @@
 package com.samaxes.webreport.action;
 
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,12 +19,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.MappingDispatchAction;
-import org.eclipse.birt.report.engine.api.EngineConstants;
-import org.eclipse.birt.report.engine.api.HTMLRenderContext;
+import org.eclipse.birt.report.engine.api.EXCELRenderOption;
 import org.eclipse.birt.report.engine.api.HTMLRenderOption;
+import org.eclipse.birt.report.engine.api.HTMLServerImageHandler;
+import org.eclipse.birt.report.engine.api.IExcelRenderOption;
+import org.eclipse.birt.report.engine.api.IHTMLRenderOption;
+import org.eclipse.birt.report.engine.api.IPDFRenderOption;
 import org.eclipse.birt.report.engine.api.IReportEngine;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
+import org.eclipse.birt.report.engine.api.PDFRenderOption;
 
 import com.samaxes.webreport.birt.BirtEngine;
 import com.samaxes.webreport.common.Constants;
@@ -83,38 +86,33 @@ public class WebReportAction extends MappingDispatchAction {
         ServletContext sc = request.getSession().getServletContext();
         this.birtReportEngine = BirtEngine.getBirtEngine(sc);
 
-        // setup image directory
-        HTMLRenderContext renderContext = new HTMLRenderContext();
-        renderContext.setBaseImageURL(request.getContextPath() + "/images");
-        renderContext.setImageDirectory(sc.getRealPath("/images"));
-
-        logger.log(Level.FINE, "image directory " + sc.getRealPath("/images"));
-
-        HashMap<String, HTMLRenderContext> contextMap = new HashMap<String, HTMLRenderContext>();
-        contextMap.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT, renderContext);
-
         IReportRunnable design;
         try {
             // Open report design
             design = birtReportEngine.openReportDesign(sc.getRealPath("/reports") + "/" + reportName);
             // create task to run and render report
             IRunAndRenderTask task = birtReportEngine.createRunAndRenderTask(design);
-            task.setAppContext(contextMap);
 
             // set output options
-            HTMLRenderOption options = new HTMLRenderOption();
-            options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_HTML);
+            IHTMLRenderOption options = new HTMLRenderOption();
+            options.setOutputFormat(IHTMLRenderOption.OUTPUT_FORMAT_HTML);
             options.setEmbeddable(true);
             options.setOutputStream(out);
-            task.setRenderOption(options);
+
+            // set the image handler to a HTMLServerImageHandler if you plan on using the base image url.
+            options.setImageHandler(new HTMLServerImageHandler());
+            options.setBaseImageURL(request.getContextPath() + "/images");
+            options.setImageDirectory(sc.getRealPath("/images"));
 
             // run report
+            task.setRenderOption(options);
             task.run();
             task.close();
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ServletException(e);
         }
+
         return out;
     }
 
@@ -138,31 +136,20 @@ public class WebReportAction extends MappingDispatchAction {
         ServletContext sc = request.getSession().getServletContext();
         this.birtReportEngine = BirtEngine.getBirtEngine(sc);
 
-        // setup image directory
-        HTMLRenderContext renderContext = new HTMLRenderContext();
-        renderContext.setBaseImageURL(request.getContextPath() + "/images");
-        renderContext.setImageDirectory(sc.getRealPath("/images"));
-
-        logger.log(Level.FINE, "image directory " + sc.getRealPath("/images"));
-
-        HashMap<String, HTMLRenderContext> contextMap = new HashMap<String, HTMLRenderContext>();
-        contextMap.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT, renderContext);
-
         IReportRunnable design;
         try {
             // Open report design
             design = birtReportEngine.openReportDesign(sc.getRealPath("/reports") + "/" + reportName);
             // create task to run and render report
             IRunAndRenderTask task = birtReportEngine.createRunAndRenderTask(design);
-            task.setAppContext(contextMap);
 
             // set output options
-            HTMLRenderOption options = new HTMLRenderOption();
-            options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_PDF);
+            IPDFRenderOption options = new PDFRenderOption();
+            options.setOutputFormat(IPDFRenderOption.OUTPUT_FORMAT_PDF);
             options.setOutputStream(response.getOutputStream());
-            task.setRenderOption(options);
 
             // run report
+            task.setRenderOption(options);
             task.run();
             task.close();
         } catch (Exception e) {
@@ -191,31 +178,20 @@ public class WebReportAction extends MappingDispatchAction {
         ServletContext sc = request.getSession().getServletContext();
         this.birtReportEngine = BirtEngine.getBirtEngine(sc);
 
-        // setup image directory
-        HTMLRenderContext renderContext = new HTMLRenderContext();
-        renderContext.setBaseImageURL(request.getContextPath() + "/images");
-        renderContext.setImageDirectory(sc.getRealPath("/images"));
-
-        logger.log(Level.FINE, "image directory " + sc.getRealPath("/images"));
-
-        HashMap<String, HTMLRenderContext> contextMap = new HashMap<String, HTMLRenderContext>();
-        contextMap.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT, renderContext);
-
         IReportRunnable design;
         try {
             // Open report design
             design = birtReportEngine.openReportDesign(sc.getRealPath("/reports") + "/" + reportName);
             // create task to run and render report
             IRunAndRenderTask task = birtReportEngine.createRunAndRenderTask(design);
-            task.setAppContext(contextMap);
 
             // set output options
-            HTMLRenderOption options = new HTMLRenderOption();
+            IExcelRenderOption options = new EXCELRenderOption();
             options.setOutputFormat(Constants.XLS_FORMAT);
             options.setOutputStream(response.getOutputStream());
-            task.setRenderOption(options);
 
             // run report
+            task.setRenderOption(options);
             task.run();
             task.close();
         } catch (Exception e) {

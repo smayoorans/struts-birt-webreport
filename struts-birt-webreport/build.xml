@@ -9,10 +9,10 @@
     <property name="build.compiler" value="javac1.5" />
 
     <!-- Set global properties for this build -->
-    <property name="project.name" value="webreport" />
+    <property name="project.name" value="webreport-struts" />
     <property name="project.title" value="BIRT WebReport" />
     <property name="project.version" value="1.1.0" />
-    <property name="war.file" value="${project.name}.war" />
+    <property name="war.file" value="${project.name}-${project.version}.war" />
     <property name="javadoc.packages" value="com.samaxes.*" />
 
     <property name="lib.dir" value="lib" />

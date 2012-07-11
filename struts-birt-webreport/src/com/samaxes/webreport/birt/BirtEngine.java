@@ -21,9 +21,7 @@ import org.eclipse.birt.core.framework.IPlatformContext;
 import org.eclipse.birt.core.framework.Platform;
 import org.eclipse.birt.core.framework.PlatformServletContext;
 import org.eclipse.birt.report.engine.api.EngineConfig;
-import org.eclipse.birt.report.engine.api.HTMLActionHandler;
-import org.eclipse.birt.report.engine.api.HTMLEmitterConfig;
-import org.eclipse.birt.report.engine.api.HTMLServerImageHandler;
+import org.eclipse.birt.report.engine.api.EngineConstants;
 import org.eclipse.birt.report.engine.api.IReportEngine;
 import org.eclipse.birt.report.engine.api.IReportEngineFactory;
 
@@ -87,6 +85,7 @@ public class BirtEngine {
             }
 
             config.setEngineHome("");
+            config.getAppContext().put(EngineConstants.APPCONTEXT_CLASSLOADER_KEY, BirtEngine.class.getClassLoader());
             IPlatformContext context = new PlatformServletContext(sc);
             config.setPlatformContext(context);
 
@@ -99,12 +98,6 @@ public class BirtEngine {
             IReportEngineFactory factory = (IReportEngineFactory) Platform
                     .createFactoryObject(IReportEngineFactory.EXTENSION_REPORT_ENGINE_FACTORY);
             birtEngine = factory.createReportEngine(config);
-
-            // setup HTML emitter configuration (for correctly render report images)
-            HTMLEmitterConfig htmlEmitterConfig = new HTMLEmitterConfig();
-            htmlEmitterConfig.setActionHandler(new HTMLActionHandler());
-            htmlEmitterConfig.setImageHandler(new HTMLServerImageHandler());
-            config.getEmitterConfigs().put(Constants.HTML_FORMAT, htmlEmitterConfig);
 
             // setup XLS emitter configuration
             Map<String, Comparable> xlsConfig = new HashMap<String, Comparable>();
@@ -124,7 +117,7 @@ public class BirtEngine {
         if (birtEngine == null) {
             return;
         }
-        birtEngine.shutdown();
+        birtEngine.destroy();
         Platform.shutdown();
         birtEngine = null;
     }
@@ -134,15 +127,15 @@ public class BirtEngine {
      * 
      * @return a clone of this instance.
      * @exception CloneNotSupportedException if the object's class does not support the <code>Cloneable</code>
-     *                interface. Subclasses that override the <code>clone</code> method can also throw this exception
-     *                to indicate that an instance cannot be cloned.
+     *            interface. Subclasses that override the <code>clone</code> method can also throw this exception to
+     *            indicate that an instance cannot be cloned.
      */
     public Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
 
     /**
-     * Loads the Engone properties.
+     * Loads the Engine properties.
      */
     private static void loadEngineProps() {
         try {
