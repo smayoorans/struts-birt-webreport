@@ -8,7 +8,6 @@ package com.samaxes.webreport.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,9 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.birt.report.engine.api.EngineConstants;
-import org.eclipse.birt.report.engine.api.HTMLRenderContext;
 import org.eclipse.birt.report.engine.api.HTMLRenderOption;
+import org.eclipse.birt.report.engine.api.HTMLServerImageHandler;
 import org.eclipse.birt.report.engine.api.IReportEngine;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
@@ -74,31 +72,25 @@ public class WebReportServlet extends HttpServlet {
         ServletContext sc = req.getSession().getServletContext();
         this.birtReportEngine = BirtEngine.getBirtEngine(sc);
 
-        // setup image directory
-        HTMLRenderContext renderContext = new HTMLRenderContext();
-        renderContext.setBaseImageURL(req.getContextPath() + "/images");
-        renderContext.setImageDirectory(sc.getRealPath("/images"));
-
-        logger.log(Level.FINE, "image directory " + sc.getRealPath("/images"));
-
-        HashMap<String, HTMLRenderContext> contextMap = new HashMap<String, HTMLRenderContext>();
-        contextMap.put(EngineConstants.APPCONTEXT_HTML_RENDER_CONTEXT, renderContext);
-
         IReportRunnable design;
         try {
             // Open report design
             design = birtReportEngine.openReportDesign(sc.getRealPath("/reports") + "/" + reportName);
             // create task to run and render report
             IRunAndRenderTask task = birtReportEngine.createRunAndRenderTask(design);
-            task.setAppContext(contextMap);
 
             // set output options
             HTMLRenderOption options = new HTMLRenderOption();
             options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_HTML);
             options.setOutputStream(resp.getOutputStream());
-            task.setRenderOption(options);
+
+            // set the image handler to a HTMLServerImageHandler if you plan on using the base image url.
+            options.setImageHandler(new HTMLServerImageHandler());
+            options.setBaseImageURL(req.getContextPath() + "/images");
+            options.setImageDirectory(sc.getRealPath("/images"));
 
             // run report
+            task.setRenderOption(options);
             task.run();
             task.close();
         } catch (Exception e) {
@@ -118,16 +110,13 @@ public class WebReportServlet extends HttpServlet {
      * @throws IOException if an error occurred
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
         out.println("<HTML>");
         out.println("  <HEAD><TITLE>A Servlet</TITLE></HEAD>");
         out.println("  <BODY>");
-        out.print("    This is ");
-        out.print(this.getClass());
-        out.println(", using the POST method");
+        out.println(" Post Not Supported");
         out.println("  </BODY>");
         out.println("</HTML>");
         out.flush();
@@ -137,9 +126,10 @@ public class WebReportServlet extends HttpServlet {
     /**
      * Initialization of the servlet. <br>
      * 
-     * @throws ServletException if an error occure
+     * @throws ServletException if an error occurred
      */
     public void init() throws ServletException {
         BirtEngine.initBirtConfig();
     }
+
 }
